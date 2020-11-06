@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+
+    <title>Mails</title>
+</head>
+
+<body>
+<div th:switch="${emails}">
+    <h2 th:case="null">No emails found!</h2>
+
+    <div th:case="*">
+        <h2>Emails</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Recipient</th>
+                <th>Subject</th>
+                <th>Main text of massage</th>
+                <th>Send date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="emails : ${emails}">
+                <td th:text="${emails.recipient}"></td>
+                <td th:text="${emails.subject}"></td>
+                <td th:text="${emails.body}"></td>
+                <td th:text="${emails.date}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <p><a href="/main">Back to index</a></p>
+    <form th:action="/" th:method="POST">
+        <button type="submit">Logout</button>
+    </form>
+</div>
+
+</body>
+</html>

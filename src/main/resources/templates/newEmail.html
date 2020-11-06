@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create new email</title>
+</head>
+
+<body>
+<form th:method="POST" th:action="@{/create-email}" th:object="${email}">
+    <label for="recipient">Recipient</label>
+    <input class="form-control" placeholder="some@some.com"
+           id="recipient" type="email" th:field="*{recipient}"
+           title="Contact's email (format: xxx@xxx.xxx)"
+           pattern="^[A-Za-z0-9+_.-]+@(.+)$">
+
+    <label for="subject">Subject</label>
+    <input type="text" th:field="*{subject}" id="subject" placeholder="Subject">
+    <br>
+    <br>
+
+    <label for="localdate"><b>Enter the date when do you want to send this email</b></label>
+    <br>
+    <input type="date" th:field="*{date}" id="localdate" name="dateTime" placeholder="dd MM yyyy HH:mm"/>
+    <br>
+    <br>
+    <label for="body">Body</label>
+    <br>
+    <textarea th:field="*{body}" id="body" cols="25" rows="7" placeholder="Please type your message here"></textarea>
+    <br>
+    <br>
+    <input type="submit" value="Save">
+    <input type="reset" value="Reset">
+</form>
+<footer >
+
+</footer>
+</body>
+</html>
