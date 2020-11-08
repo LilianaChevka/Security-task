@@ -9,18 +9,15 @@ import java.util.List;
 
     public interface EmailRepo {
 
-        void createEmail(Email email) throws IOException;
 
-        void save(List<Email> email) throws IOException;
+            List<Email> findEmailsForSending();
 
-        List<Email> findAllEmails() throws IOException;
+            void save(Email email);
 
-        List<Email> findEmailsForSending() throws IOException;
+            Email findById(Long id);
 
-        void deleteEmailByDate(LocalDateTime time) throws IOException;
+            List<Email> findAllEmails();
 
-        void deleteSentEmails() throws IOException;
-
-
-    }
+            void deleteById(Long id);
+        }
 
