@@ -3,9 +3,11 @@ package com.hometask.task_security.service;
 
 import com.hometask.task_security.model.Email;
 import com.hometask.task_security.repository.EmailRepoImpl;
+import com.hometask.task_security.repository.db_repo.JDBCRepoImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -21,17 +23,19 @@ public class EmailService {
 
     private final JavaMailSender emailSender;
     private final EmailRepoImpl repo;
+    public final JDBCRepoImpl crudOperationImpl;
 
     @Autowired
-    public EmailService(JavaMailSender emailSender, EmailRepoImpl repo) {
+    public EmailService(@Qualifier("getJavaMailSender") JavaMailSender emailSender, EmailRepoImpl repo, JDBCRepoImpl crudOperationImpl) {
         this.emailSender = emailSender;
         this.repo = repo;
+        this.crudOperationImpl = crudOperationImpl;
     }
 
     @Scheduled(fixedRate = 60000) //1 min
     public void sendSimpleEmail() throws MailException, IOException {
-        List<Email> emailsNearDeliveryDate = repo.findEmailsForSending();
-        for (Email emails : emailsNearDeliveryDate) {
+        List<Email> emailsForSending = repo.findEmailsForSending();
+        for (Email emails : emailsForSending) {
 
             SimpleMailMessage message = new SimpleMailMessage();
 
@@ -42,6 +46,6 @@ public class EmailService {
             LOG.info("All information about your email {}:", emails.toString());
             this.emailSender.send(message);
         }
-        repo.deleteSentEmails();
+        crudOperationImpl.deleteById();
     }
 }

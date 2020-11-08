@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 public class Email {
+    private int id;
     private String recipient;
     private String subject;
     private String body;
@@ -18,7 +19,7 @@ public class Email {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime date;
 
-    public Email() {
+    public Email(String recipient, String subject, String body, LocalDateTime date) {
 
     }
 }
