@@ -1,36 +1,34 @@
 package com.hometask.task_security.service;
 
-
 import com.hometask.task_security.model.Email;
-import com.hometask.task_security.repository.EmailRepoImpl;
+import com.hometask.task_security.repository.EmailRepo;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
 
-@Component
+
+@Service
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@RequiredArgsConstructor
 public class EmailService {
-    private static final Logger LOG = LoggerFactory.getLogger(EmailService.class);
+    static Logger LOG = LoggerFactory.getLogger(EmailService.class);
 
-    private final JavaMailSender emailSender;
-    private final EmailRepoImpl repo;
+    JavaMailSender emailSender;
+    EmailRepo emailRepo;
 
-    @Autowired
-    public EmailService(JavaMailSender emailSender, EmailRepoImpl repo) {
-        this.emailSender = emailSender;
-        this.repo = repo;
-    }
 
     @Scheduled(fixedRate = 60000) //1 min
-    public void sendSimpleEmail() throws MailException, IOException {
-        List<Email> emailsNearDeliveryDate = repo.findEmailsForSending();
+    public void sendSimpleEmail() throws MailException {
+        List<Email> emailsNearDeliveryDate = emailRepo.findEmailsForSending();
         for (Email emails : emailsNearDeliveryDate) {
 
             SimpleMailMessage message = new SimpleMailMessage();
@@ -41,7 +39,8 @@ public class EmailService {
 
             LOG.info("All information about your email {}:", emails.toString());
             this.emailSender.send(message);
+
+            emailRepo.deleteById(emails.getId());
         }
-        repo.deleteSentEmails();
     }
 }
